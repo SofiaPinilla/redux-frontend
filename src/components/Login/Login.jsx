@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { login } from "../../features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { login, reset } from "../../features/auth/authSlice";
+import { useEffect } from "react";
+import { notification } from "antd";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +10,26 @@ const Login = () => {
     password: "",
   });
   const { email, password } = formData;
-  const dispatch = useDispatch()
+  const { isSuccess, message, isError } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isSuccess) {
+      notification.success({
+        message: "Exitoso",
+        description: message,
+      });
+    }
+    if (isError) {
+      notification.error({
+        message: "Error",
+        description: message,
+      });
+    }
+    dispatch(reset())
+  }, [isSuccess, message]);
+
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -17,11 +38,17 @@ const Login = () => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(login(formData))
+    dispatch(login(formData));
   };
   return (
     <form onSubmit={onSubmit}>
-      <input type="email" name="email" value={email} onChange={onChange} placeholder="email" />
+      <input
+        type="email"
+        name="email"
+        value={email}
+        onChange={onChange}
+        placeholder="email"
+      />
       <input
         type="password"
         name="password"

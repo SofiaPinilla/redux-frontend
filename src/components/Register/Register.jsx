@@ -1,16 +1,37 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { register } from "../../features/auth/authSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { register, reset } from "../../features/auth/authSlice";
 import { notification } from "antd";
+
 const Register = () => {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     name: "",
     email: "",
     password: "",
     password2: "",
-  });
+  }
+  const [formData, setFormData] = useState(initialFormData);
   const { name, email, password, password2 } = formData;
+
+  const { isSuccess, message,isError } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isSuccess) {
+      notification.success({
+        message: "Exitoso",
+        description: message,
+      });
+    }
+    if(isError){
+      notification.error({
+        message: "Error",
+        description: message,
+      });
+    }
+    dispatch(reset())
+  }, [isSuccess, message,isError]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -27,7 +48,8 @@ const Register = () => {
         description: "Passwords do not match",
       });
     } else {
-      return dispatch(register(formData));
+       dispatch(register(formData));
+       setFormData(initialFormData)
     }
   };
 
