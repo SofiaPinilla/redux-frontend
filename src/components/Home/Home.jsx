@@ -3,7 +3,8 @@ import Posts from '../Posts/Posts'
 
 const Home = () => {
   return (
-    <div>Home
+    <div>
+     <h1>Home</h1> 
         <Posts/>
     </div>
   )
