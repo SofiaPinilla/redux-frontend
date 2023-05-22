@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Post = () => {
   const { posts } = useSelector((state) => state.posts);
-  if(posts.length <= 0){
+  if(posts?.length <= 0){
     return "No posts..."
   }
   return (
